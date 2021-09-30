@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 
 for i in range(256):
     fd = 2 if i % 3 == 0 else 1
-    os.write(fd, bytes([i]) * i)
+    os.write(fd, bytes([i] * i))
 

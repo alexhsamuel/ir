@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -25,6 +25,8 @@ args = parser.parse_args()
 
 if args.allocate is not None:
     data = b"x" * args.allocate
+    # force interpreter to actually allocate
+    cnt = len(data)
 
 if args.work is not None:
     t0 = time.monotonic()

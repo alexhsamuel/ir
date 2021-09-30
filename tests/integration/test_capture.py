@@ -29,11 +29,11 @@ def test_echo(mode, format):
 
     stdout = res["fds"]["stdout"]
     text = "Hello, world. How are you?\n"
-    if mode == "text":
+    if format == "text":
         assert stdout["text"] == text
-    elif mode == "base64":
+    elif format == "base64":
         assert stdout["encoding"] == "base64"
-        assert stdout["text"] == base64.b64encode(text.encode())
+        assert stdout["data"] == base64.standard_b64encode(text.encode()).decode()
 
 
 @pytest.mark.parametrize("mode", ["tempfile", "memory"])
