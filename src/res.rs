@@ -157,6 +157,16 @@ fn time_to_sec(time: libc::timeval) -> f64 {
     time.tv_sec as f64 + 1e-6 * time.tv_usec as f64
 }
 
+/// Normalize rusage fields. E.g. ru_maxrss to contain the size in KB.
+fn normalize_rusage(mut rusage: rusage) -> rusage {
+    #[cfg(all(target_os = "macos"))]
+    {
+        // MacOS rusage is in bytes
+        rusage.ru_maxrss /= 1024;
+    }
+    return rusage;
+}
+
 impl ProcRes {
     pub fn new(pid: pid_t, status: c_int, rusage: rusage) -> ProcRes {
         let (exit_code, signum, core_dump)= unsafe {
@@ -171,7 +181,7 @@ impl ProcRes {
             status,
             exit_code, signum, core_dump,
             fds: BTreeMap::new(),
-            rusage,
+            rusage: normalize_rusage(rusage),
         }
     }
 
