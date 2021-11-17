@@ -1,6 +1,5 @@
 import ir
 from   pathlib import Path
-import platform
 
 SCRIPTS_DIR = Path(__file__).parent / "scripts"
 
