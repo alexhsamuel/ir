@@ -157,12 +157,13 @@ fn time_to_sec(time: libc::timeval) -> f64 {
     time.tv_sec as f64 + 1e-6 * time.tv_usec as f64
 }
 
-/// Normalize rusage fields. E.g. ru_maxrss to contain the size in KB.
+/// Normalize rusage fields. E.g. ru_maxrss to contain the size in bytes.
+#[allow(unused_mut)]
 fn normalize_rusage(mut rusage: rusage) -> rusage {
-    #[cfg(all(target_os = "macos"))]
+    #[cfg(all(target_os = "linux"))]
     {
-        // MacOS rusage is in bytes
-        rusage.ru_maxrss /= 1024;
+        // Linux resident set size is in kbytes
+        rusage.ru_maxrss *= 1024;
     }
     return rusage;
 }

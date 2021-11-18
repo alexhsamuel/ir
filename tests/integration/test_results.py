@@ -27,7 +27,7 @@ def test_general():
     utime = rusage["ru_utime"]
     utime = utime["tv_sec"] + 1e-6 * utime["tv_usec"]
     assert min_utime <= utime < max_utime
-    rset_size_bytes = rusage["ru_maxrss"] * 1024
+    rset_size_bytes = rusage["ru_maxrss"]
     assert min_rset_size_bytes <= rset_size_bytes < max_rset_size_bytes
 
 
