@@ -115,9 +115,8 @@ impl FdRes {
             },
             CaptureFormat::Base64 => {
                 // FIXME: Handle errors.
-                let data = base64::encode_config(
+                let data = base64::encode(
                     &buffer, 
-                    base64::STANDARD_NO_PAD
                 );
                 FdRes::CaptureBase64 {
                     data,
