@@ -1,5 +1,6 @@
 /// Named "Res" to avoid confusion with the `Result` types.
 
+use base64::Engine;
 use crate::spec::CaptureFormat;
 use libc::{c_int, pid_t, rusage};
 use std::collections::BTreeMap;
@@ -115,7 +116,7 @@ impl FdRes {
             },
             CaptureFormat::Base64 => {
                 // FIXME: Handle errors.
-                let data = base64::encode(
+                let data = base64::engine::general_purpose::STANDARD_NO_PAD.encode(
                     &buffer, 
                 );
                 FdRes::CaptureBase64 {
@@ -158,7 +159,7 @@ fn time_to_sec(time: libc::timeval) -> f64 {
 
 impl ProcRes {
     pub fn new(pid: pid_t, status: c_int, rusage: rusage) -> ProcRes {
-        let (exit_code, signum, core_dump)= unsafe {
+        let (exit_code, signum, core_dump)= {
             if libc::WIFEXITED(status) {
                 (Some(libc::WEXITSTATUS(status)), None, false)
             } else {

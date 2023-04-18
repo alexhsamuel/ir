@@ -135,9 +135,10 @@ pub fn execve(exe: String, args: Vec<String>, env: Env) -> io::Result<()> {
     }).collect();
 
     let res = unsafe {
+        let exe_str = CString::new(exe).unwrap();
         libc::execve(
-            CString::new(exe).unwrap().as_ptr() as *const i8,
-            CStringVec::from(args).as_ptr(), 
+            exe_str.as_ptr() as *const i8,
+            CStringVec::from(args).as_ptr(),
             CStringVec::from(env).as_ptr())
     };
     // execve only returns on failure, with result -1.
@@ -174,9 +175,8 @@ pub fn mkstemp(template: &str) -> io::Result<(PathBuf, fd_t)> {
 
 pub fn open(path: &Path, oflag: c_int, mode: c_int) -> io::Result<fd_t> {
     let fd = unsafe {
-        libc::open(
-            CString::new(path.to_str().unwrap()).unwrap().as_ptr() as *const i8,
-            oflag, mode)
+        let path_str = CString::new(path.to_str().unwrap()).unwrap();
+        libc::open(path_str.as_ptr() as *const i8, oflag, mode)
     };
     match fd {
         -1 => Err(io::Error::last_os_error()),
