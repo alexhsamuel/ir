@@ -27,8 +27,11 @@ if args.allocate is not None:
     data = b"x" * args.allocate
 
 if args.work is not None:
-    t0 = time.monotonic()
-    while time.monotonic() < t0 + args.work:
+    import resource
+    utime = lambda: resource.getrusage(resource.RUSAGE_SELF).ru_utime
+    stop = utime() + args.work
+    # Spin until we've used some CPU.
+    while utime() < stop:
         pass
 
 if args.print is not None:
